@@ -1,11 +1,10 @@
 package com.ahogek.servlet;
 
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -28,10 +27,11 @@ class FormServletLiveTest {
             nvps.add(new BasicNameValuePair("weight", String.valueOf(80)));
 
             method.setEntity(new UrlEncodedFormEntity(nvps));
-            CloseableHttpResponse response = client.execute(method);
-
-            assertEquals("Success", response.getFirstHeader("Test").getValue());
-            assertEquals("20.0", response.getFirstHeader("BMI").getValue());
+            client.execute(method, response -> {
+                assertEquals("Success", response.getFirstHeader("Test").getValue());
+                assertEquals("20.0", response.getFirstHeader("BMI").getValue());
+                return null;
+            });
         }
     }
 }
