@@ -16,6 +16,7 @@ Model 定义了应用程序的业务层，Controller 管理了应用程序的流
 ## 扩展
 
 * Java 新特性 Record Classes
+  > record 的初衷 一组固定不可变的数据载体
   * [Java Language Updates | records](https://docs.oracle.com/en/java/javase/17/language/records.html#GUID-6699E26F-4A9B-4393-A08B-1E47D4B2D263)
   * [JEP 395: Records](https://openjdk.org/jeps/395)
 * Java 新特性 Switch 新语法

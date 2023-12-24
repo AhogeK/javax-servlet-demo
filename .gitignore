@@ -150,3 +150,6 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+
+# custom serializations file
+*.ser
