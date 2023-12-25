@@ -5,6 +5,7 @@ import java.lang.annotation.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -123,7 +124,46 @@ record Pair<K, V>(K key, V value) {
     }
 }
 
-@SuppressWarnings("java:S106")
+class Merchant {
+    private String name;
+
+    public Merchant(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Merchant{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+}
+
+class SalesProcessor {
+
+    public List<Merchant> findTopMerchants(List<Merchant> merchants, int month) {
+        // 本地记录类
+        record MerchantSales(Merchant merchant, double sales) {
+        }
+
+        return merchants.stream()
+                .map(m -> new MerchantSales(m, calculateSales(m, month)))
+                .sorted((m1, m2) -> Double.compare(m2.sales(), m1.sales()))
+                .map(MerchantSales::merchant)
+                .toList();
+    }
+
+    @SuppressWarnings("java:S1172")
+    private double calculateSales(Merchant merchant, int month) {
+        // 假设的销售额计算逻辑
+        return Math.random() * 1000; // 随机生成销售额
+    }
+}
+
 class Test {
 
     static Logger log = Logger.getLogger(Test.class.getName());
@@ -138,7 +178,7 @@ class Test {
         dog.eat();
 
         Person p1 = new Person("Jonah", 20, new Person.Address("123", "Beijing"));
-        Person p2 = new Person("AhogeK", 18, new Person.Address("456", "Shanghai"));
+        Person p2 = new Person("Bob", 18, new Person.Address("456", "Shanghai"));
         Stream.of(p1, p2).sorted().forEach(p -> log.log(Level.INFO, p::toString));
 
         Constructor<?>[] constructors = Person.class.getDeclaredConstructors();
@@ -180,5 +220,19 @@ class Test {
         Shape rectangle = new Rectangle(2.0, 3.0);
         log.log(Level.INFO, () -> "circle.area(): " + circle.area());
         log.log(Level.INFO, () -> "rectangle.area(): " + rectangle.area());
+
+        // 本地记录类
+        record LocalRecord(int x) {
+            public LocalRecord {
+                log.log(Level.INFO, () -> "LocalRecord constructor");
+            }
+        }
+        LocalRecord localRecord = new LocalRecord(1);
+        log.log(Level.INFO, () -> "localRecord.x: " + localRecord.x());
+
+        List<Merchant> merchants = List.of(new Merchant("AhogeK"), new Merchant("Jonah"),
+                new Merchant("John"), new Merchant("Jane"));
+        List<Merchant> topMerchants = new SalesProcessor().findTopMerchants(merchants, 1);
+        log.log(Level.INFO, () -> "topMerchants: " + topMerchants);
     }
 }
