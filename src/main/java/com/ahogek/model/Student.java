@@ -164,6 +164,32 @@ class SalesProcessor {
     }
 }
 
+class OuterClass {
+
+    static Logger log = Logger.getLogger(OuterClass.class.getName());
+
+    private OuterClass() {
+    }
+
+    static class InnerClass {
+        record InnerRecord(int x, int y) {
+            void innerRecordMethod() {
+                class LocalClass {
+                    void localClassMethod() {
+                        record LocalRecord(int x, int y) {
+                            void localRecordMethod() {
+                                log.log(Level.INFO, () -> "极致的嵌套，骚!");
+                            }
+                        }
+                        new LocalRecord(1, 2).localRecordMethod();
+                    }
+                }
+                new LocalClass().localClassMethod();
+            }
+        }
+    }
+}
+
 class Test {
 
     static Logger log = Logger.getLogger(Test.class.getName());
@@ -264,5 +290,9 @@ class Test {
         Greeter chineseGreeter = new ChineseGreeter();
         englishGreeter.greet();
         chineseGreeter.greet();
+
+        // static members of inner classes
+        OuterClass.InnerClass.InnerRecord innerRecord = new OuterClass.InnerClass.InnerRecord(1, 2);
+        innerRecord.innerRecordMethod();
     }
 }
