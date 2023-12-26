@@ -125,7 +125,7 @@ record Pair<K, V>(K key, V value) {
 }
 
 class Merchant {
-    private String name;
+    private final String name;
 
     public Merchant(String name) {
         this.name = name;
@@ -227,6 +227,7 @@ class Test {
                 log.log(Level.INFO, () -> "LocalRecord constructor");
             }
         }
+
         LocalRecord localRecord = new LocalRecord(1);
         log.log(Level.INFO, () -> "localRecord.x: " + localRecord.x());
 
@@ -234,5 +235,34 @@ class Test {
                 new Merchant("John"), new Merchant("Jane"));
         List<Merchant> topMerchants = new SalesProcessor().findTopMerchants(merchants, 1);
         log.log(Level.INFO, () -> "topMerchants: " + topMerchants);
+
+        // 局部枚举/接口
+        enum Color {
+            RED, GREEN, BLUE
+        }
+        log.log(Level.INFO, () -> "Color.RED: " + Color.RED);
+
+        interface Greeter {
+            void greet();
+        }
+
+        class EnglishGreeter implements Greeter {
+            @Override
+            public void greet() {
+                log.log(Level.INFO, () -> "Hello");
+            }
+        }
+
+        class ChineseGreeter implements Greeter {
+            @Override
+            public void greet() {
+                log.log(Level.INFO, () -> "你好");
+            }
+        }
+
+        Greeter englishGreeter = new EnglishGreeter();
+        Greeter chineseGreeter = new ChineseGreeter();
+        englishGreeter.greet();
+        chineseGreeter.greet();
     }
 }
